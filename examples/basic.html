@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>基础使用</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "Reflux": "../src/reflux.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <p>点击：<span id="value">0</span></p>
+    <button type="button" id="increment">加一</button>
+    <button type="button" id="decrement">减一</button>
+    <script type="module">
+      import Redux from "Reflux";
+      const initialState = {
+        value: 0,
+      };
+      function counterReducer(state = initialState, action) {
+        switch (action.type) {
+          case "counter/incremented":
+            return { ...state, value: state.value + 1 };
+          case "counter/decremented":
+            return { ...state, value: state.value - 1 };
+          default:
+            return state;
+        }
+      }
+
+      const store = Redux.createStore(counterReducer);
+
+      const valueEl = document.getElementById("value");
+
+      function render() {
+        const state = store.getState();
+        valueEl.innerHTML = state.value.toString();
+      }
+
+      render();
+      store.subscribe(render);
+
+      document
+        .getElementById("increment")
+        .addEventListener("click", function () {
+          store.dispatch({ type: "counter/incremented" });
+        });
+
+      document
+        .getElementById("decrement")
+        .addEventListener("click", function () {
+          store.dispatch({ type: "counter/decremented" });
+        });
+    </script>
+  </body>
+</html>
